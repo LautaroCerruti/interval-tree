@@ -14,9 +14,21 @@ INodo *itree_nuevo_nodo(double extremoIzq, double extremoDer);
 
 void itree_destruir(ITree arbol);
 
+int intervalo_valido(double extremoIzq, double extremoDer);
+
+int itree_balance(ITree arbol);
+
+ITree rotacion_izquierda(ITree arbol);
+
+ITree rotacion_derecha(ITree arbol);
+
+int itree_altura(ITree arbol);
+
 ITree itree_balancear(ITree arbol);
 
 ITree itree_insertar(ITree arbol, double extremoIzq, double extremoDer);
+
+INodo *itree_obtener_menor(ITree arbol);
 
 ITree itree_eliminar(ITree arbol, double extremoIzq, double extremoDer);
 
