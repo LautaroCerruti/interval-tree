@@ -3,6 +3,14 @@
 
 #include <stddef.h>
 #include <stdio.h>
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+
+struct _Intervalo{
+    double extremoIzq;
+    double extremoDer;
+};
+
+typedef struct _Intervalo Intervalo;
 
 typedef struct _INodo INodo;
 
@@ -10,11 +18,11 @@ typedef INodo *ITree;
 
 ITree itree_crear();
 
-INodo *itree_nuevo_nodo(double extremoIzq, double extremoDer);
+INodo *itree_nuevo_nodo(Intervalo intervalo);
 
 void itree_destruir(ITree arbol);
 
-int intervalo_valido(double extremoIzq, double extremoDer);
+int intervalo_valido(Intervalo intervalo);
 
 int itree_balance(ITree arbol);
 
@@ -26,16 +34,16 @@ int itree_altura(ITree arbol);
 
 ITree itree_balancear(ITree arbol);
 
-ITree itree_insertar(ITree arbol, double extremoIzq, double extremoDer);
+ITree itree_insertar(ITree arbol, Intervalo intervalo);
 
 INodo *itree_obtener_menor(ITree arbol);
 
-ITree itree_eliminar(ITree arbol, double extremoIzq, double extremoDer);
+ITree itree_eliminar(ITree arbol, Intervalo intervalo);
 
-INodo *itree_intersecar(ITree arbol, double extremoIzq, double extremoDer);
+INodo *itree_intersecar(ITree arbol, Intervalo intervalo);
 
 void itree_recorrer_dfs(ITree arbol);
 
 void itree_recorrer_bfs(ITree arbol);
 
-#endif /* __GLIST_H__ */
+#endif /* __ITREE_H__ */
