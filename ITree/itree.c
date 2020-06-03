@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 struct _INodo {
-    Intervalo intervalo;
+    Intervalo *intervalo;
     double maxExtremoDer;
     int altura;
     struct _INodo *izq;
@@ -14,11 +14,10 @@ ITree itree_crear() {
     return NULL;
 }
 
-INodo *itree_nuevo_nodo(Intervalo intervalo) {
-    INodo *nodo = malloc(sizeof(INodo));
-    nodo->intervalo.extremoIzq = intervalo.extremoIzq;
-    nodo->intervalo.extremoDer = intervalo.extremoDer;
-    nodo->maxExtremoDer = intervalo.extremoDer;
+INodo *itree_nuevo_nodo(Intervalo *intervalo) {
+    INodo *nodo = (INodo *) malloc(sizeof(INodo));
+    nodo->intervalo = intervalo;
+    nodo->maxExtremoDer = intervalo_extremo_der(intervalo);
     nodo->altura = 0;
     nodo->izq = NULL;
     nodo->der = NULL;
@@ -33,14 +32,10 @@ void itree_destruir(ITree arbol) {
     }
 }
 
-int intervalo_valido(Intervalo intervalo) {
-    return intervalo.extremoIzq <= intervalo.extremoDer;
-}
-
 double itree_calcular_max_extremo_der(ITree arbol) {
-    return MAX(arbol->intervalo.extremoDer, 
-        MAX(arbol->izq ? arbol->izq->maxExtremoDer : arbol->intervalo.extremoDer, 
-            arbol->der ? arbol->der->maxExtremoDer : arbol->intervalo.extremoDer));
+    return MAX(intervalo_extremo_der(arbol->intervalo), 
+        MAX(arbol->izq ? arbol->izq->maxExtremoDer : intervalo_extremo_der(arbol->intervalo), 
+            arbol->der ? arbol->der->maxExtremoDer : intervalo_extremo_der(arbol->intervalo)));
 }
 
 ITree rotacion_izquierda(ITree arbol) {
@@ -92,21 +87,21 @@ ITree itree_balancear(ITree arbol) {
     return arbol;
 }
 
-ITree itree_insertar(ITree arbol, Intervalo intervalo) {
+ITree itree_insertar(ITree arbol, Intervalo *intervalo) {
     if (!intervalo_valido(intervalo)) {
         printf("Intervalo invalido\n");
         return arbol;
     }
     if (arbol) {
-        if (intervalo.extremoIzq < arbol->intervalo.extremoIzq || 
-            (intervalo.extremoIzq == arbol->intervalo.extremoIzq && 
-            intervalo.extremoDer < arbol->intervalo.extremoDer)) {
+        if (intervalo_extremo_izq(intervalo) < intervalo_extremo_izq(arbol->intervalo) || 
+            (intervalo_extremo_izq(intervalo) == intervalo_extremo_izq(arbol->intervalo) && 
+            intervalo_extremo_der(intervalo) < intervalo_extremo_der(arbol->intervalo))) {
             arbol->izq = itree_insertar(arbol->izq, intervalo);
             arbol->maxExtremoDer = arbol->izq->maxExtremoDer > arbol->maxExtremoDer ? 
                 arbol->izq->maxExtremoDer : 
                 arbol->maxExtremoDer;
-        } else if (intervalo.extremoIzq != arbol->intervalo.extremoIzq ||
-            intervalo.extremoDer != arbol->intervalo.extremoDer) {
+        } else if (intervalo_extremo_izq(intervalo) != intervalo_extremo_izq(arbol->intervalo) ||
+            intervalo_extremo_der(intervalo) != intervalo_extremo_der(arbol->intervalo)) {
             arbol->der = itree_insertar(arbol->der, intervalo);
             arbol->maxExtremoDer = arbol->der->maxExtremoDer > arbol->maxExtremoDer ? 
                 arbol->der->maxExtremoDer : 
@@ -124,30 +119,32 @@ INodo *itree_obtener_menor(ITree arbol) {
     return itree_obtener_menor(arbol->izq);
 }
 
-ITree itree_eliminar(ITree arbol, Intervalo intervalo) {
+ITree itree_eliminar(ITree arbol, Intervalo *intervalo) {
     if (!intervalo_valido(intervalo)) {
         printf("Intervalo invalido\n");
         return arbol;
     }
     if (!arbol)
         return arbol;
-    if (intervalo.extremoIzq == arbol->intervalo.extremoIzq && 
-        intervalo.extremoDer == arbol->intervalo.extremoDer) {
+    if (intervalo_extremo_izq(intervalo) == intervalo_extremo_izq(arbol->intervalo) && 
+        intervalo_extremo_der(intervalo) == intervalo_extremo_der(arbol->intervalo)) {
         if (!arbol->izq || !arbol->der) {
             ITree aux = arbol->izq ? arbol->izq : arbol->der;
+            free(arbol->intervalo);
             free(arbol);
             arbol = aux;
         } else {
             INodo *nodo = itree_obtener_menor(arbol->der);
-            arbol->intervalo = nodo->intervalo;
+            free(arbol->intervalo);
+            arbol->intervalo = intervalo_crear(intervalo_extremo_izq(nodo->intervalo), intervalo_extremo_der(nodo->intervalo));
             arbol->der = itree_eliminar(arbol->der, nodo->intervalo);
         }
-    } else if (intervalo.extremoIzq > arbol->intervalo.extremoIzq) {
+    } else if (intervalo_extremo_izq(intervalo) > intervalo_extremo_izq(arbol->intervalo)) {
         arbol->der = itree_eliminar(arbol->der, intervalo);
     } else {
         arbol->izq = itree_eliminar(arbol->izq, intervalo);
     }
-    if(arbol){
+    if (arbol) {
         arbol->altura =  1 + MAX(itree_altura(arbol->izq), itree_altura(arbol->der));
         arbol->maxExtremoDer = itree_calcular_max_extremo_der(arbol);
     }
@@ -157,7 +154,20 @@ ITree itree_eliminar(ITree arbol, Intervalo intervalo) {
 void itree_recorrer_dfs(ITree arbol) {
     if (arbol) {
         itree_recorrer_dfs(arbol->izq);
-        printf("%lf, %lf, %d, %lf\n", arbol->intervalo.extremoIzq, arbol->intervalo.extremoDer, itree_altura(arbol), arbol->maxExtremoDer);
+        printf("%lf, %lf, %d, %lf\n", intervalo_extremo_izq(arbol->intervalo), intervalo_extremo_der(arbol->intervalo), itree_altura(arbol), arbol->maxExtremoDer);
         itree_recorrer_dfs(arbol->der);
     }
+}
+
+ITree itree_intersecar(ITree arbol, Intervalo *intervalo) {
+    if (!arbol || arbol->maxExtremoDer < intervalo_extremo_izq(intervalo))
+        return NULL;
+    if (intervalo_interseca(arbol->intervalo, intervalo))
+        return arbol;
+    if (intervalo_extremo_izq(arbol->intervalo) > intervalo_extremo_der(intervalo))
+        return itree_intersecar(arbol->der, intervalo);
+    ITree aux = itree_intersecar(arbol->izq, intervalo);
+    if (!aux)
+        return itree_intersecar(arbol->der, intervalo);
+    return aux;
 }

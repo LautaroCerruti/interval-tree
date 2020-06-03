@@ -8,25 +8,27 @@ int main() {
     char buffer[MAX_LINEA], operacion;
     double fn, sn;
     buffer[0] = '\0';
-    ITree arbol = itree_crear();
-    Intervalo intervalo;
+    ITree arbol = itree_crear(), nodo;
+    Intervalo *intervalo;
 
     while(strcmp(gets(buffer), "salir\0")){
-        if(sscanf(buffer, "%c [%lf,%lf]", &operacion, &fn, &sn) == 3){
+        if(sscanf(buffer, "%c [%lf, %lf]", &operacion, &fn, &sn) == 3){
             switch (operacion)
             {
             case 'i':
-                intervalo.extremoIzq = fn;
-                intervalo.extremoDer = sn;
+                intervalo = intervalo_crear(fn, sn);
                 arbol = itree_insertar(arbol, intervalo);
                 break;
             case 'e':
-                intervalo.extremoIzq = fn;
-                intervalo.extremoDer = sn;
+                intervalo = intervalo_crear(fn, sn);
                 arbol = itree_eliminar(arbol, intervalo);
+                free(intervalo);
                 break;
             case '?':
-                printf("Not Implemented yet %c, %lf, %lf\n", operacion, fn, sn);
+                intervalo = intervalo_crear(fn, sn);
+                nodo = itree_intersecar(arbol, intervalo);
+                printf(nodo ? "Si\n" : "No\n");
+                nodo = NULL;
                 break;
             default:
                 printf("Comando Incorrecto\n");
