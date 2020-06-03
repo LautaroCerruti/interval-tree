@@ -37,12 +37,20 @@ int intervalo_valido(Intervalo intervalo) {
     return intervalo.extremoIzq <= intervalo.extremoDer;
 }
 
+double itree_calcular_max_extremo_der(ITree arbol) {
+    return MAX(arbol->intervalo.extremoDer, 
+        MAX(arbol->izq ? arbol->izq->maxExtremoDer : arbol->intervalo.extremoDer, 
+            arbol->der ? arbol->der->maxExtremoDer : arbol->intervalo.extremoDer));
+}
+
 ITree rotacion_izquierda(ITree arbol) {
     ITree aux = arbol->der;
     arbol->der = arbol->der->izq;
     aux->izq = arbol;
     arbol->altura = 1 + MAX(itree_altura(arbol->izq), itree_altura(arbol->der));
     aux->altura = 1 + MAX(itree_altura(aux->izq), itree_altura(aux->der));
+    arbol->maxExtremoDer = itree_calcular_max_extremo_der(arbol);
+    aux->maxExtremoDer = itree_calcular_max_extremo_der(aux);
     return aux;
 }
 
@@ -52,6 +60,8 @@ ITree rotacion_derecha(ITree arbol) {
     aux->der = arbol;
     arbol->altura = 1 + MAX(itree_altura(arbol->izq), itree_altura(arbol->der));
     aux->altura = 1 + MAX(itree_altura(aux->izq), itree_altura(aux->der));
+    arbol->maxExtremoDer = itree_calcular_max_extremo_der(arbol);
+    aux->maxExtremoDer = itree_calcular_max_extremo_der(aux);
     return aux;
 }
 
@@ -137,14 +147,17 @@ ITree itree_eliminar(ITree arbol, Intervalo intervalo) {
     } else {
         arbol->izq = itree_eliminar(arbol->izq, intervalo);
     }
-    arbol->altura =  1 + MAX(itree_altura(arbol->izq), itree_altura(arbol->der));
+    if(arbol){
+        arbol->altura =  1 + MAX(itree_altura(arbol->izq), itree_altura(arbol->der));
+        arbol->maxExtremoDer = itree_calcular_max_extremo_der(arbol);
+    }
     return itree_balancear(arbol);
 }
 
 void itree_recorrer_dfs(ITree arbol) {
     if (arbol) {
         itree_recorrer_dfs(arbol->izq);
-        printf("%f, %f, %d, %f\n", arbol->intervalo.extremoIzq, arbol->intervalo.extremoDer, itree_altura(arbol), arbol->maxExtremoDer);
+        printf("%lf, %lf, %d, %lf\n", arbol->intervalo.extremoIzq, arbol->intervalo.extremoDer, itree_altura(arbol), arbol->maxExtremoDer);
         itree_recorrer_dfs(arbol->der);
     }
 }
