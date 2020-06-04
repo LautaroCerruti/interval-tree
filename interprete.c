@@ -29,7 +29,11 @@ int main() {
             case '?':
                 intervalo = intervalo_crear(fn, sn);
                 nodo = itree_intersecar(arbol, intervalo);
-                printf(nodo ? "Si\n\n" : "No\n\n");
+                if (nodo) {
+                    printf("Si, [%lf, %lf]\n\n", intervalo_extremo_izq(nodo), intervalo_extremo_der(nodo));
+                } else {
+                    printf("No\n\n");
+                }
                 nodo = NULL;
                 break;
             default:

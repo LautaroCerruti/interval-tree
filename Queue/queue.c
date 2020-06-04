@@ -3,44 +3,50 @@
 #include <stdlib.h>
 
 struct _QNode {
-  void *data;
-  struct _QNode *prev;
-  struct _QNode *next;
+  void *dato;
+  struct _QNode *ant;
+  struct _QNode *sig;
 };
 
 Queue queue_create() {
   return NULL;
 }
 
-void *queue_pop(Queue *list) {
-  void *data = NULL;
-  if (*list && list) {
-    data = (*list)->data;
-    if ((*list)->next == *list){
-      free(*list);
-      *list = NULL;
+void *queue_pop(Queue *queue) {
+  void *dato = NULL;
+  if (*queue && queue) {
+    dato = (*queue)->dato;
+    if ((*queue)->sig == *queue){
+      free(*queue);
+      *queue = NULL;
     } else {
-      Queue aux = *list;
-      aux->prev->next = aux->next;
-      aux->next->prev = aux->prev;
-      *list = aux->next;
+      Queue aux = *queue;
+      aux->ant->sig = aux->sig;
+      aux->sig->ant = aux->ant;
+      *queue = aux->sig;
       free(aux);
     }
   }
-  return data;
+  return dato;
 }
 
-Queue queue_push(Queue list, void *data) {
-  QNode *node = malloc(sizeof(QNode));
-  node->data = data;
-  if (!list) {
-    node->prev = node;
-    node->next = node;
-    return node;
+Queue queue_push(Queue queue, void *dato) {
+  QNode *nodo = malloc(sizeof(QNode));
+  nodo->dato = dato;
+  if (!queue) {
+    nodo->ant = nodo;
+    nodo->sig = nodo;
+    return nodo;
   }
-  list->prev->next = node;
-  node->prev = list->prev;
-  list->prev = node;
-  node->next = list; 
-  return list;
+  queue->ant->sig = nodo;
+  nodo->ant = queue->ant;
+  queue->ant = nodo;
+  nodo->sig = queue; 
+  return queue;
+}
+
+void queue_destruir(Queue queue, FuncionDestruir funcion) {
+  while (queue) {
+    function(queue_pop(queue));
+  }
 }
