@@ -15,6 +15,10 @@ Intervalo *intervalo_crear(double extremoIzq, double extremoDer) {
     return intervalo;
 }
 
+void intervalo_destruir(Intervalo *intervalo) {
+    free(intervalo);
+}
+
 double intervalo_extremo_izq(Intervalo *intervalo) {
     return intervalo->extremoIzq;
 }
@@ -29,4 +33,9 @@ int intervalo_valido(Intervalo *intervalo) {
 
 int intervalo_interseca(Intervalo *intervalo1, Intervalo *intervalo2) {
     return intervalo1->extremoDer >= intervalo2->extremoIzq && intervalo1->extremoIzq <= intervalo2->extremoDer;
+}
+
+void intervalo_imprimir(Intervalo *intervalo) {
+    if (intervalo)
+        printf("[%lf, %lf]  ", intervalo_extremo_izq(intervalo), intervalo_extremo_der(intervalo));
 }

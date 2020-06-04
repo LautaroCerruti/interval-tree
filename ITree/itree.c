@@ -24,10 +24,11 @@ INodo *itree_nuevo_nodo(Intervalo *intervalo) {
     return nodo;
 }
 
-void itree_destruir(ITree arbol) {
+void itree_destruir(ITree arbol, FuncionIntervaloVoid funcion) {
     if (arbol) {
-        itree_destruir(arbol->izq);
-        itree_destruir(arbol->der);
+        itree_destruir(arbol->izq, funcion);
+        itree_destruir(arbol->der, funcion);
+        funcion(arbol->intervalo);
         free(arbol);
     }
 }
@@ -124,8 +125,10 @@ ITree itree_eliminar(ITree arbol, Intervalo *intervalo) {
         printf("Intervalo invalido\n");
         return arbol;
     }
-    if (!arbol)
+    if (!arbol){
+        printf("Intervalo no encontrado\n");
         return arbol;
+    }
     if (intervalo_extremo_izq(intervalo) == intervalo_extremo_izq(arbol->intervalo) && 
         intervalo_extremo_der(intervalo) == intervalo_extremo_der(arbol->intervalo)) {
         if (!arbol->izq || !arbol->der) {
@@ -151,23 +154,36 @@ ITree itree_eliminar(ITree arbol, Intervalo *intervalo) {
     return itree_balancear(arbol);
 }
 
-void itree_recorrer_dfs(ITree arbol) {
-    if (arbol) {
-        itree_recorrer_dfs(arbol->izq);
-        printf("%lf, %lf, %d, %lf\n", intervalo_extremo_izq(arbol->intervalo), intervalo_extremo_der(arbol->intervalo), itree_altura(arbol), arbol->maxExtremoDer);
-        itree_recorrer_dfs(arbol->der);
-    }
-}
-
 ITree itree_intersecar(ITree arbol, Intervalo *intervalo) {
     if (!arbol || arbol->maxExtremoDer < intervalo_extremo_izq(intervalo))
         return NULL;
     if (intervalo_interseca(arbol->intervalo, intervalo))
         return arbol;
-    if (intervalo_extremo_izq(arbol->intervalo) > intervalo_extremo_der(intervalo))
-        return itree_intersecar(arbol->der, intervalo);
-    ITree aux = itree_intersecar(arbol->izq, intervalo);
-    if (!aux)
-        return itree_intersecar(arbol->der, intervalo);
-    return aux;
+    if (intervalo_extremo_izq(arbol->intervalo) > intervalo_extremo_der(intervalo)
+        || arbol->izq->maxExtremoDer >= intervalo_extremo_izq(intervalo))
+        return itree_intersecar(arbol->izq, intervalo);
+    return itree_intersecar(arbol->der, intervalo);
+}
+
+void itree_recorrer_dfs(ITree arbol, FuncionIntervaloVoid funcion) {
+    if (arbol) {
+        itree_recorrer_dfs(arbol->izq, funcion);
+        funcion(arbol->intervalo);
+        itree_recorrer_dfs(arbol->der, funcion);
+    }
+}
+
+void itree_recorrer_bfs(ITree arbol, FuncionIntervaloVoid funcion) {
+    if (arbol) {
+        Queue queue = queue_create();
+        ITree aux;
+        queue = queue_push(queue, arbol);
+        while (queue)
+        {
+            aux = (ITree) queue_pop(&queue);
+            funcion(aux->intervalo);
+            queue = aux->izq ? queue_push(queue, aux->izq) : queue;
+            queue = aux->der ? queue_push(queue, aux->der) : queue;
+        }
+    }
 }

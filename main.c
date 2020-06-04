@@ -1,4 +1,4 @@
-#include "itree.h"
+#include ".\ITree\itree.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,29 +18,34 @@ int main() {
             case 'i':
                 intervalo = intervalo_crear(fn, sn);
                 arbol = itree_insertar(arbol, intervalo);
+                printf("\n\n");
                 break;
             case 'e':
                 intervalo = intervalo_crear(fn, sn);
                 arbol = itree_eliminar(arbol, intervalo);
                 free(intervalo);
+                printf("\n\n");
                 break;
             case '?':
                 intervalo = intervalo_crear(fn, sn);
                 nodo = itree_intersecar(arbol, intervalo);
-                printf(nodo ? "Si\n" : "No\n");
+                printf(nodo ? "Si\n\n" : "No\n\n");
                 nodo = NULL;
                 break;
             default:
-                printf("Comando Incorrecto\n");
+                printf("Comando Incorrecto\n\n");
                 break;
             }
         } else if (!strcmp(buffer, "bfs\0")) {
-            printf("BFS\n");
+            itree_recorrer_bfs(arbol, intervalo_imprimir);
+            printf("\n\n");
         } else if (!strcmp(buffer, "dfs\0")) {
-            itree_recorrer_dfs(arbol);
+            itree_recorrer_dfs(arbol, intervalo_imprimir);
+            printf("\n\n");
         } else {
-            printf("Comando Incorrecto\n");
+            printf("Comando Incorrecto\n\n");
         }
     }
+    itree_destruir(arbol, intervalo_destruir);
     return 0;
 }
