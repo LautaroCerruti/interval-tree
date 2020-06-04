@@ -11,7 +11,7 @@ int main() {
     ITree arbol = itree_crear(), nodo;
     Intervalo *intervalo;
 
-    while(strcmp(gets(buffer), "salir\0")){
+    while(strcmp(fgets(buffer, sizeof(buffer), stdin), "salir\0")){
         if(sscanf(buffer, "%c [%lf, %lf]", &operacion, &fn, &sn) == 3){
             switch (operacion)
             {
