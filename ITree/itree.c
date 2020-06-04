@@ -189,7 +189,6 @@ void itree_recorrer_bfs(ITree arbol, FuncionIntervaloVoid funcion) {
 }
 
 void itree_imprimir_intervalo(ITree arbol, FuncionIntervaloVoid funcion) {
-    if (arbol) {
-        printf("[%lf, %lf]", intervalo_extremo_izq(arbol->intervalo), intervalo_extremo_der(arbol->intervalo));
-    }
+    if (arbol)
+        funcion(arbol->intervalo);
 }
