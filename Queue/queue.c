@@ -47,6 +47,6 @@ Queue queue_push(Queue queue, void *dato) {
 
 void queue_destruir(Queue queue, FuncionDestruir funcion) {
   while (queue) {
-    function(queue_pop(queue));
+    funcion(queue_pop(&queue));
   }
 }
