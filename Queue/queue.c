@@ -9,14 +9,14 @@ struct _QNode {
 };
 
 Queue queue_create() {
-  return NULL;
+  return NULL; //retorna una cola vacia
 }
 
 void *queue_pop(Queue *queue) {
   void *dato = NULL;
-  if (*queue && queue) {
+  if (*queue && queue) { //si existe la cola y no esta vacia
     dato = (*queue)->dato;
-    if ((*queue)->sig == *queue){
+    if ((*queue)->sig == *queue){ //si la cola tiene un solo elemento
       free(*queue);
       *queue = NULL;
     } else {
