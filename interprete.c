@@ -18,13 +18,11 @@ int main() {
             case 'i':
                 intervalo = intervalo_crear(fn, sn);
                 arbol = itree_insertar(arbol, intervalo);
-                printf("\n\n");
                 break;
             case 'e':
                 intervalo = intervalo_crear(fn, sn);
                 arbol = itree_eliminar(arbol, intervalo);
                 free(intervalo);
-                printf("\n\n");
                 break;
             case '?':
                 intervalo = intervalo_crear(fn, sn);
@@ -32,16 +30,16 @@ int main() {
                 if (nodo) {
                     printf("Si ");
                     itree_imprimir_intervalo(arbol, intervalo_imprimir);
-                    printf("\n\n");
                 } else {
-                    printf("No\n\n");
+                    printf("No");
                 }
                 nodo = NULL;
                 break;
             default:
-                printf("Comando Incorrecto\n\n");
+                printf("Comando Incorrecto");
                 break;
             }
+            printf("\n\n");
         } else if (!strcmp(buffer, "bfs\0")) {
             itree_recorrer_bfs(arbol, intervalo_imprimir);
             printf("\n\n");
