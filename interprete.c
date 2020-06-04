@@ -30,7 +30,9 @@ int main() {
                 intervalo = intervalo_crear(fn, sn);
                 nodo = itree_intersecar(arbol, intervalo);
                 if (nodo) {
-                    printf("Si, [%lf, %lf]\n\n", intervalo_extremo_izq(nodo), intervalo_extremo_der(nodo));
+                    printf("Si ");
+                    itree_imprimir_intervalo(arbol, intervalo_imprimir);
+                    printf("\n\n");
                 } else {
                     printf("No\n\n");
                 }

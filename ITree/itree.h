@@ -29,4 +29,6 @@ void itree_recorrer_dfs(ITree arbol, FuncionIntervaloVoid funcion);
 
 void itree_recorrer_bfs(ITree arbol, FuncionIntervaloVoid funcion);
 
+void itree_imprimir_intervalo(ITree arbol, FuncionIntervaloVoid funcion);
+
 #endif /* __ITREE_H__ */
