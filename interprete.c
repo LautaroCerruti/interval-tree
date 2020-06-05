@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#define MAX_LINEA 658
+#define MAX_LINEA 660
 
 char *leer_cadena(char *string) {
     char c, *aux = string;
