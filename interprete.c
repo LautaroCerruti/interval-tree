@@ -22,10 +22,10 @@ char obtener_operacion(char *string, Intervalo **intervalo) {
     double numero1, numero2;
     if (strlen(string) >= 8 && string[1] == ' ' && string[2] == '[') {
         string += 3;
-        if (isdigit(*string) != 0) {
+        if (isdigit(*string) != 0 || *string == '-') {
             numero1 = strtod(string, &resto);
         }
-        if (*resto == ',' && *(resto + 1) == ' ' && isdigit(*(resto + 2))) {
+        if (*resto == ',' && *(resto + 1) == ' ' && (isdigit(*(resto + 2)) || *(resto + 2) == '-')) {
             string = resto + 2;
             numero2 = strtod(string, &resto);
         }
@@ -43,11 +43,15 @@ int main() {
     ITree arbol = itree_crear(), nodo;
     Intervalo *intervalo;
 
+    printf("i: insertar\ne: eliminar\n?: intersecar\ndfs, bfs: mostrar arbol\nsalir: finalizar programa\n\n");
+
     while(strcmp(leer_cadena(buffer), "salir\0")) {
         if (!strcmp(buffer, "dfs\0")) {
             itree_recorrer_dfs(arbol, intervalo_imprimir);
+            printf("\n");
         } else if (!strcmp(buffer, "bfs\0")) {
             itree_recorrer_bfs(arbol, intervalo_imprimir);
+            printf("\n");
         } else {
             switch (obtener_operacion(buffer, &intervalo)) {
                 case 'i':
@@ -60,20 +64,18 @@ int main() {
                 case '?':
                     nodo = itree_intersecar(arbol, intervalo);
                     if (nodo) {
-                        printf("Si ");
+                        printf("  Si,");
                         itree_imprimir_intervalo(nodo, intervalo_imprimir);
-                    } else {
-                        printf("No");
-                    }
+                    } else
+                        printf("  No");
                     printf("\n");
                     nodo = NULL;
                     break;
                 default:
-                    printf("Comando Incorrecto");
+                    printf("  Comando Incorrecto");
                     break;
             }
         }
-        printf("\n\n");
     }
     itree_destruir(arbol, intervalo_destruir);
     return 0;

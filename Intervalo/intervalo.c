@@ -37,5 +37,5 @@ int intervalo_interseca(Intervalo *intervalo1, Intervalo *intervalo2) {
 
 void intervalo_imprimir(Intervalo *intervalo) {
     if (intervalo)
-        printf("[%lf, %lf]  ", intervalo_extremo_izq(intervalo), intervalo_extremo_der(intervalo));
+        printf("  [%g, %g]", intervalo_extremo_izq(intervalo), intervalo_extremo_der(intervalo));
 }
