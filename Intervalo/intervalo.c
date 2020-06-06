@@ -10,13 +10,13 @@ struct _Intervalo{
 
 Intervalo *intervalo_crear(double extremoIzq, double extremoDer) {
     Intervalo *intervalo = (Intervalo *) malloc(sizeof(Intervalo)); //Pedimos memoria
-    intervalo->extremoIzq = extremoIzq;
+    intervalo->extremoIzq = extremoIzq; //Asignamos los valores
     intervalo->extremoDer = extremoDer;
-    return intervalo;
+    return intervalo; //retornamos el puntero al intervalo
 }
 
 void intervalo_destruir(Intervalo *intervalo) {
-    free(intervalo);
+    free(intervalo); //Liberamos la memoria
 }
 
 double intervalo_extremo_izq(Intervalo *intervalo) {
@@ -28,8 +28,10 @@ double intervalo_extremo_der(Intervalo *intervalo) {
 }
 
 int intervalo_valido(Intervalo *intervalo) {
-    if(intervalo->extremoIzq <= intervalo->extremoDer){
+    // Si el extremo izquierdo del intervalo es mayor al extremo derecho
+    if (intervalo->extremoIzq <= intervalo->extremoDer) {
         printf("Intervalo invalido\n");
+        free(intervalo); // Eliminamos el intervalo ya que es invalido
         return 1;
     }
     return 0;
