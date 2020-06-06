@@ -72,6 +72,9 @@ int main() {
                     intervalo_destruir(intervalo);
                     nodo = NULL;
                     break;
+                case '\0':
+                    printf("  Comando Incorrecto\n");
+                    break;
                 default:
                     intervalo_destruir(intervalo);
                     printf("  Comando Incorrecto\n");
