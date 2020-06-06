@@ -14,8 +14,7 @@ Intervalo *intervalo_crear(double extremoIzq, double extremoDer);
 
 /*
   intervalo_destruir: Intervalo*
-  Dado un intervalo libera la memoria que ocupa,
-  borrandolo.
+  Dado un intervalo libera la memoria que ocupa, borrandolo.
 */
 void intervalo_destruir(Intervalo *intervalo);
 
@@ -36,20 +35,20 @@ double intervalo_extremo_der(Intervalo *intervalo);
 /*
   intervalo_valido: Intervalo* -> int
   Dado un puntero intervalo, retorna 1 si es valido y imprime por pantalla un 
-  error, 0 en caso contrario
+  error, 0 en caso contrario.
 */
 int intervalo_valido(Intervalo *intervalo);
 
 /*
   intervalo_interseca: Intervalo* Intervalo* -> int
   Dados 2 punteros intervalos, retorna 1 si los intervalos a los que apuntan 
-  se intersecan o 0 en caso contrario
+  se intersecan o 0 en caso contrario.
 */
 int intervalo_interseca(Intervalo *intervalo1, Intervalo *intervalo2);
 
 /*
   intervalo_imprimir: Intervalo*
-  Dado un puntero intervalo lo imprime por pantalla
+  Dado un puntero intervalo lo imprime por pantalla.
 */
 void intervalo_imprimir(Intervalo *intervalo);
 

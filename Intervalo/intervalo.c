@@ -9,14 +9,14 @@ struct _Intervalo{
 };
 
 Intervalo *intervalo_crear(double extremoIzq, double extremoDer) {
-    Intervalo *intervalo = (Intervalo *) malloc(sizeof(Intervalo)); //Pedimos memoria
-    intervalo->extremoIzq = extremoIzq; //Asignamos los valores
+    Intervalo *intervalo = (Intervalo *) malloc(sizeof(Intervalo)); // Pedimos memoria
+    intervalo->extremoIzq = extremoIzq; // Asignamos los valores
     intervalo->extremoDer = extremoDer;
-    return intervalo; //retornamos el puntero al intervalo
+    return intervalo; // retornamos el puntero al intervalo
 }
 
 void intervalo_destruir(Intervalo *intervalo) {
-    free(intervalo); //Liberamos la memoria
+    free(intervalo);
 }
 
 double intervalo_extremo_izq(Intervalo *intervalo) {
@@ -38,7 +38,11 @@ int intervalo_valido(Intervalo *intervalo) {
 }
 
 int intervalo_interseca(Intervalo *intervalo1, Intervalo *intervalo2) {
-    return intervalo1->extremoDer >= intervalo2->extremoIzq && intervalo1->extremoIzq <= intervalo2->extremoDer;
+    // Un intervalo interseca con otro si el extremo derecho del primer
+    // intervalo es mayor o igual al extremo izquierdo del segundo y el extremo
+    // izquierdo del primero es menor o igual que el del segundo
+    return intervalo1->extremoDer >= intervalo2->extremoIzq && 
+        intervalo1->extremoIzq <= intervalo2->extremoDer;
 }
 
 void intervalo_imprimir(Intervalo *intervalo) {

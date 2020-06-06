@@ -65,7 +65,7 @@ int main() {
                     nodo = itree_intersecar(arbol, intervalo);
                     if (nodo) {
                         printf("  Si,");
-                        itree_imprimir_intervalo(nodo, intervalo_imprimir);
+                        itree_aplicar_a_intervalo(nodo, intervalo_imprimir);
                     } else
                         printf("  No");
                     printf("\n");
