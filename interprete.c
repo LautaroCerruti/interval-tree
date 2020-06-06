@@ -59,7 +59,7 @@ int main() {
                     break;
                 case 'e':
                     arbol = itree_eliminar(arbol, intervalo);
-                    free(intervalo);
+                    intervalo_destruir(intervalo);
                     break;
                 case '?':
                     nodo = itree_intersecar(arbol, intervalo);
@@ -69,6 +69,7 @@ int main() {
                     } else
                         printf("  No");
                     printf("\n");
+                    intervalo_destruir(intervalo);
                     nodo = NULL;
                     break;
                 default:
