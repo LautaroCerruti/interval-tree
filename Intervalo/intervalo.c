@@ -31,7 +31,7 @@ int intervalo_valido(Intervalo *intervalo) {
     // Si el extremo izquierdo del intervalo es mayor al extremo derecho
     if (intervalo->extremoIzq > intervalo->extremoDer) {
         printf("  Intervalo invalido\n");
-        free(intervalo); // Eliminamos el intervalo ya que es invalido
+        intervalo_destruir(intervalo); // Eliminamos el intervalo ya que es invalido
         return 0;
     }
     return 1;
