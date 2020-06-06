@@ -5,19 +5,52 @@
 #include <stdio.h>
 
 typedef struct _Intervalo Intervalo;
-
+/*
+  intervalo_crear: double double -> Intervalo*
+  Dado dos numeros double, la funcion asigna la memoria de un intervalo,
+  lo almacena con estos valores y retorna el puntero a donde esta almacenado
+*/
 Intervalo *intervalo_crear(double extremoIzq, double extremoDer);
 
+/*
+  intervalo_destruir: Intervalo*
+  Dado un intervalo libera la memoria que ocupa,
+  borrandolo.
+*/
 void intervalo_destruir(Intervalo *intervalo);
 
+/*
+  intervalo_extremo_izq: Intervalo* -> double
+  Dado el puntero de un intervalo, retorna el valor del extremo izquierdo
+  del intervalo almacenado en la direccion a la que apunta.
+*/
 double intervalo_extremo_izq(Intervalo *intervalo);
 
+/*
+  intervalo_extremo_izq: Intervalo* -> double
+  Dado el puntero intervalo, retorna el valor del extremo derecho
+  del intervalo almacenado en la direccion a la que apunta.
+*/
 double intervalo_extremo_der(Intervalo *intervalo);
 
+/*
+  intervalo_valido: Intervalo* -> int
+  Dado un puntero intervalo, retorna 1 si es valido y imprime por pantalla un 
+  error, 0 en caso contrario
+*/
 int intervalo_valido(Intervalo *intervalo);
 
+/*
+  intervalo_interseca: Intervalo* Intervalo* -> int
+  Dados 2 punteros intervalos, retorna 1 si los intervalos a los que apuntan 
+  se intersecan o 0 en caso contrario
+*/
 int intervalo_interseca(Intervalo *intervalo1, Intervalo *intervalo2);
 
+/*
+  intervalo_imprimir: Intervalo*
+  Dado un puntero intervalo lo imprime por pantalla
+*/
 void intervalo_imprimir(Intervalo *intervalo);
 
 #endif /* __ITREE_H__ */

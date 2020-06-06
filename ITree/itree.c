@@ -89,10 +89,8 @@ ITree itree_balancear(ITree arbol) {
 }
 
 ITree itree_insertar(ITree arbol, Intervalo *intervalo) {
-    if (!intervalo_valido(intervalo)) {
-        printf("Intervalo invalido\n");
+    if (!intervalo_valido(intervalo))
         return arbol;
-    }
     if (arbol) {
         if (intervalo_extremo_izq(intervalo) < intervalo_extremo_izq(arbol->intervalo) || 
             (intervalo_extremo_izq(intervalo) == intervalo_extremo_izq(arbol->intervalo) && 
@@ -121,10 +119,8 @@ INodo *itree_obtener_menor(ITree arbol) {
 }
 
 ITree itree_eliminar(ITree arbol, Intervalo *intervalo) {
-    if (!intervalo_valido(intervalo)) {
-        printf("Intervalo invalido\n");
+    if (!intervalo_valido(intervalo))
         return arbol;
-    }
     if (!arbol){
         printf("Intervalo no encontrado\n");
         return arbol;

@@ -9,7 +9,7 @@ struct _Intervalo{
 };
 
 Intervalo *intervalo_crear(double extremoIzq, double extremoDer) {
-    Intervalo *intervalo = (Intervalo *) malloc(sizeof(Intervalo));
+    Intervalo *intervalo = (Intervalo *) malloc(sizeof(Intervalo)); //Pedimos memoria
     intervalo->extremoIzq = extremoIzq;
     intervalo->extremoDer = extremoDer;
     return intervalo;
@@ -28,7 +28,11 @@ double intervalo_extremo_der(Intervalo *intervalo) {
 }
 
 int intervalo_valido(Intervalo *intervalo) {
-    return intervalo->extremoIzq <= intervalo->extremoDer;
+    if(intervalo->extremoIzq <= intervalo->extremoDer){
+        printf("Intervalo invalido\n");
+        return 1;
+    }
+    return 0;
 }
 
 int intervalo_interseca(Intervalo *intervalo1, Intervalo *intervalo2) {
