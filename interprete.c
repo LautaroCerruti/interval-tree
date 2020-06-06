@@ -72,7 +72,7 @@ int main() {
                     nodo = NULL;
                     break;
                 default:
-                    printf("  Comando Incorrecto");
+                    printf("  Comando Incorrecto\n");
                     break;
             }
         }
