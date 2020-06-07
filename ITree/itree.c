@@ -194,7 +194,7 @@ ITree itree_insertar(ITree arbol, Intervalo *intervalo) {
         else
             // Insertamos el intervalo en el subarbol derecho
             arbol->der = itree_insertar(arbol->der, intervalo);
-        itree_actualizar_datos(arbol); // Acutualizamos los datos de la raiz
+        itree_actualizar_datos(&arbol); // Acutualizamos los datos de la raiz
         return itree_balancear(arbol); // Retornamos el arbol balanceado
     }
     // Retornamos un nuevo nodo con el intervalo
@@ -242,7 +242,7 @@ ITree itree_eliminar(ITree arbol, Intervalo *intervalo) {
         arbol->izq = itree_eliminar(arbol->izq, intervalo);
     }
     if (arbol) // Si el arbol no esta vacio
-        itree_actualizar_datos(arbol); // Actualizamos los datos del arbol
+        itree_actualizar_datos(&arbol); // Actualizamos los datos del arbol
     return itree_balancear(arbol); // Retornamos el arbol balanceado
 }
 
