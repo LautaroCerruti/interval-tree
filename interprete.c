@@ -34,7 +34,7 @@ char obtener_operacion(char *string, Intervalo **intervalo) {
     double numero1, numero2;
     // Si cumple el tamaño minimo de caracteres y los primeros 3 caracteres
     // cumplen un cierto formato
-    if (strlen(string) >= 8 && isalpha(string[0]) && string[1] == ' ' && string[2] == '[') {
+    if (strlen(string) >= 8 && string[1] == ' ' && string[2] == '[') {
         string += 3; // Movemos la posicion a la que apunta string
         // Si el caracter al que apunta string es un numero o un '-'
         if (isdigit(*string) != 0 || *string == '-') {
