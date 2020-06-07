@@ -6,7 +6,7 @@
 #define MAX_LINEA 660
 
 /*
-
+    leer_cadena: char* -> char*
 */
 char *leer_cadena(char *string) {
     char c, *aux = string;

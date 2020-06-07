@@ -202,10 +202,14 @@ ITree itree_insertar(ITree arbol, Intervalo *intervalo) {
     return itree_nuevo_nodo(intervalo);
 }
 
+// [4, 6] [2, 4] [4, 8] [5, 7]   
+
 ITree itree_eliminar(ITree arbol, Intervalo *intervalo) {
     if (!intervalo_valido(intervalo)) // Si el intervalo es invalido
         return arbol;
-    if (!arbol) { // Si el arbol es vacio
+    // Si el arbol es vacio o el maximo extremo derecho del arbol es menor al
+    // extremo izquierdo del intervalo
+    if (!arbol || arbol->maxExtremoDer < intervalo_extremo_izq(intervalo)) {
         printf("Intervalo no encontrado\n");
         return arbol;
     }
@@ -234,8 +238,11 @@ ITree itree_eliminar(ITree arbol, Intervalo *intervalo) {
             arbol->der = itree_eliminar(arbol->der, nodo->intervalo);
         }
     // Si el extremo izquierdo del intervalo es mayor al extremo izquierdo del
-    // intervalo de la raiz
-    } else if (intervalo_extremo_izq(intervalo) > intervalo_extremo_izq(arbol->intervalo))
+    // intervalo de la raiz o los extremos izquierdos son iguales y el  extremo
+    // derecho del intervalo es mayor al extremo derecho del intervalo del arbol
+    } else if (intervalo_extremo_izq(intervalo) > intervalo_extremo_izq(arbol->intervalo) ||
+        (intervalo_extremo_izq(intervalo) == intervalo_extremo_izq(arbol->intervalo) &&
+        intervalo_extremo_der(intervalo) > intervalo_extremo_der(arbol->intervalo)))
         // Ejecutamos la funcion eliminar en el subarbol derecho
         arbol->der = itree_eliminar(arbol->der, intervalo);
     else {
