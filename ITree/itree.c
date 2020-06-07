@@ -210,7 +210,7 @@ ITree itree_eliminar(ITree arbol, Intervalo *intervalo) {
     // Si el arbol es vacio o el maximo extremo derecho del arbol es menor al
     // extremo izquierdo del intervalo
     if (!arbol || arbol->maxExtremoDer < intervalo_extremo_izq(intervalo)) {
-        printf("Intervalo no encontrado\n");
+        printf("  Intervalo no encontrado\n");
         return arbol;
     }
     // Si los extremos del intervalo del arbol coinciden con el que queremos
