@@ -5,6 +5,9 @@
 #include <ctype.h>
 #define MAX_LINEA 660
 
+/*
+
+*/
 char *leer_cadena(char *string) {
     char c, *aux = string;
     while ((c = getchar()) != '\n') {
@@ -17,6 +20,9 @@ char *leer_cadena(char *string) {
     return aux;
 }
 
+/*
+    
+*/
 char obtener_operacion(char *string, Intervalo **intervalo) {
     char operacion = string[0], *resto;
     double numero1, numero2;

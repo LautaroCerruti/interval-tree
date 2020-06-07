@@ -10,10 +10,6 @@ struct _INodo {
     struct _INodo *der;
 };
 
-ITree itree_crear() {
-    return NULL; // Retorna un ITree vacio
-}
-
 INodo *itree_nuevo_nodo(Intervalo *intervalo) {
     // Pedimos la memoria para un nodo
     INodo *nodo = (INodo *) malloc(sizeof(INodo));
@@ -25,17 +21,6 @@ INodo *itree_nuevo_nodo(Intervalo *intervalo) {
     nodo->izq = NULL;
     nodo->der = NULL;
     return nodo;
-}
-
-void itree_destruir(ITree arbol, FuncionIntervaloVoid funcion) {
-    if (arbol) { // Si existe el arbol
-        // Ejecutamos itree_destruir en los 2 hijos del nodo
-        itree_destruir(arbol->izq, funcion);
-        itree_destruir(arbol->der, funcion);
-        // Liberamos la memoria de su intervalo utilizando la funcion "funcion"
-        funcion(arbol->intervalo);
-        free(arbol); // Liberamos la memoria del nodo
-    }
 }
 
 /*
@@ -67,9 +52,11 @@ int itree_calcular_altura(ITree arbol) {
     Dado un puntero a un arbol, actualiza su altura y su maximo extremo derecho
 */
 void itree_actualizar_datos(ITree *arbol) {
-    (*arbol)->altura = itree_calcular_altura(*arbol); // Actualizmos la altura
-    // Actualizmos el maximo extremo derecho
-    (*arbol)->maxExtremoDer = itree_calcular_max_extremo_der(*arbol); 
+    if(arbol){ // Si el arbol no es vacio
+        (*arbol)->altura = itree_calcular_altura(*arbol); // Actualizmos la altura
+        // Actualizmos el maximo extremo derecho
+        (*arbol)->maxExtremoDer = itree_calcular_max_extremo_der(*arbol); 
+    }
 }
 
 /*
@@ -80,6 +67,8 @@ void itree_actualizar_datos(ITree *arbol) {
     Retornamos la nueva raiz.
 */
 ITree rotacion_izquierda(ITree arbol) {
+    if (!arbol) // Si el arbol es vacio
+        return arbol;
     ITree aux = arbol->der; // Creamos la nueva raiz
     // Cambiamos las referencias del arbol
     arbol->der = arbol->der->izq;
@@ -98,6 +87,8 @@ ITree rotacion_izquierda(ITree arbol) {
     Retornamos la nueva raiz.
 */
 ITree rotacion_derecha(ITree arbol) {
+    if (!arbol) // Si el arbol es vacio
+        return arbol;
     ITree aux = arbol->izq; // Creamos la nueva raiz
     // Cambiamos las referencias del arbol
     arbol->izq = arbol->izq->der;
@@ -106,12 +97,6 @@ ITree rotacion_derecha(ITree arbol) {
     itree_actualizar_datos(&arbol);
     itree_actualizar_datos(&aux);
     return aux;
-}
-
-int itree_altura(ITree arbol) {
-    if (!arbol) // Si el arbol esta vacio
-        return -1; // Retornamos -1 para facilitar calculos
-    return arbol->altura; // Retornamos su altura
 }
 
 /*
@@ -152,66 +137,113 @@ ITree itree_balancear(ITree arbol) {
     return arbol; // En caso de estar balanceado no cambia nada
 }
 
-ITree itree_insertar(ITree arbol, Intervalo *intervalo) {
-    if (!intervalo_valido(intervalo))
-        return arbol;
-    if (arbol) {
-        if (intervalo_extremo_izq(intervalo) < intervalo_extremo_izq(arbol->intervalo) || 
-            (intervalo_extremo_izq(intervalo) == intervalo_extremo_izq(arbol->intervalo) && 
-            intervalo_extremo_der(intervalo) < intervalo_extremo_der(arbol->intervalo))) {
-            arbol->izq = itree_insertar(arbol->izq, intervalo);
-            arbol->maxExtremoDer = arbol->izq->maxExtremoDer > arbol->maxExtremoDer ? 
-                arbol->izq->maxExtremoDer : 
-                arbol->maxExtremoDer;
-        } else if (intervalo_extremo_izq(intervalo) != intervalo_extremo_izq(arbol->intervalo) ||
-            intervalo_extremo_der(intervalo) != intervalo_extremo_der(arbol->intervalo)) {
-            arbol->der = itree_insertar(arbol->der, intervalo);
-            arbol->maxExtremoDer = arbol->der->maxExtremoDer > arbol->maxExtremoDer ? 
-                arbol->der->maxExtremoDer : 
-                arbol->maxExtremoDer;
-        }
-        arbol->altura =  1 + MAX(itree_altura(arbol->izq), itree_altura(arbol->der));
-        return itree_balancear(arbol);
-    }
-    return itree_nuevo_nodo(intervalo);
-}
-
+/*
+    itree_obtener_menor: ITree -> INodo*
+    Dado un aborl, retorna el menor nodo del arbol
+*/
 INodo *itree_obtener_menor(ITree arbol) {
-    if (!arbol->izq)
+    if (!arbol || !arbol->izq)
         return arbol;
     return itree_obtener_menor(arbol->izq);
 }
 
+void itree_aplicar_a_intervalo(ITree arbol, FuncionIntervaloVoid funcion) {
+    if (arbol) // Si el arbol no esta vacio
+        // Aplica la funcion en el intervalo de la raiz
+        funcion(arbol->intervalo);
+}
+
+ITree itree_crear() {
+    return NULL; // Retorna un ITree vacio
+}
+
+void itree_destruir(ITree arbol, FuncionIntervaloVoid funcion) {
+    if (arbol) { // Si existe el arbol
+        // Ejecutamos itree_destruir en los 2 hijos del nodo
+        itree_destruir(arbol->izq, funcion);
+        itree_destruir(arbol->der, funcion);
+        // Liberamos la memoria de su intervalo utilizando la funcion "funcion"
+        funcion(arbol->intervalo);
+        free(arbol); // Liberamos la memoria del nodo
+    }
+}
+
+int itree_altura(ITree arbol) {
+    if (!arbol) // Si el arbol esta vacio
+        return -1; // Retornamos -1 para facilitar calculos
+    return arbol->altura; // Retornamos su altura
+}
+
+ITree itree_insertar(ITree arbol, Intervalo *intervalo) {
+    // Si el intervalo es invalido o los extremos del intervalo coinciden con
+    // los del arbol
+    if (!intervalo_valido(intervalo) || 
+        (intervalo_extremo_izq(intervalo) == intervalo_extremo_izq(arbol->intervalo) 
+        && intervalo_extremo_der(intervalo) == intervalo_extremo_der(arbol->intervalo)))
+        return arbol; // Devolvemos el mismo arbol
+    if (arbol) { // Si el arbol no esta vacio
+        // Si el extremo izquierdo del intervalo es menor al extremo izquierdo
+        // del intervalo del arbol o el extremo izquierdo del intervalo es 
+        // igual al extremo izquiedo del intervalo del arbol y el extremo 
+        // derecho del intervalo es menor al extremo derecho del intervalo del arbol
+        if (intervalo_extremo_izq(intervalo) < intervalo_extremo_izq(arbol->intervalo) || 
+            (intervalo_extremo_izq(intervalo) == intervalo_extremo_izq(arbol->intervalo) && 
+            intervalo_extremo_der(intervalo) < intervalo_extremo_der(arbol->intervalo)))
+            // Insertamos el intervalo en el subarbol izquierdo
+            arbol->izq = itree_insertar(arbol->izq, intervalo);
+        else
+            // Insertamos el intervalo en el subarbol derecho
+            arbol->der = itree_insertar(arbol->der, intervalo);
+        itree_actualizar_datos(arbol); // Acutualizamos los datos de la raiz
+        return itree_balancear(arbol); // Retornamos el arbol balanceado
+    }
+    // Retornamos un nuevo nodo con el intervalo
+    return itree_nuevo_nodo(intervalo);
+}
+
 ITree itree_eliminar(ITree arbol, Intervalo *intervalo) {
-    if (!intervalo_valido(intervalo))
+    if (!intervalo_valido(intervalo)) // Si el intervalo es invalido
         return arbol;
-    if (!arbol){
+    if (!arbol) { // Si el arbol es vacio
         printf("Intervalo no encontrado\n");
         return arbol;
     }
+    // Si los extremos del intervalo del arbol coinciden con el que queremos
+    // eliminar
     if (intervalo_extremo_izq(intervalo) == intervalo_extremo_izq(arbol->intervalo) && 
         intervalo_extremo_der(intervalo) == intervalo_extremo_der(arbol->intervalo)) {
-        if (!arbol->izq || !arbol->der) {
+        if (!arbol->izq || !arbol->der) { // Si el arbol tiene a lo sumo un hijo
+            // Guardamos el hijo izquierdo en aux en caso de que exista o el 
+            // derecho en caso contrario
             ITree aux = arbol->izq ? arbol->izq : arbol->der;
-            free(arbol->intervalo);
+            // Liberamos la memoria del intervalo
+            intervalo_destruir(arbol->intervalo);
+            // Liberamos la memoria del nodo
             free(arbol);
+            // Igualamos el arbol al nuevo nodo
             arbol = aux;
         } else {
+            // Obtenemos el menor nodo del subarbol derecho
             INodo *nodo = itree_obtener_menor(arbol->der);
-            free(arbol->intervalo);
+            // Reemplazamos el intervalo del arbol por el del menor nodo 
+            // del subarbol derecho
+            intervalo_destruir(arbol->intervalo);
             arbol->intervalo = intervalo_crear(intervalo_extremo_izq(nodo->intervalo), intervalo_extremo_der(nodo->intervalo));
+            // Eliminamos el menor nodo del subarbol derecho
             arbol->der = itree_eliminar(arbol->der, nodo->intervalo);
         }
-    } else if (intervalo_extremo_izq(intervalo) > intervalo_extremo_izq(arbol->intervalo)) {
+    // Si el extremo izquierdo del intervalo es mayor al extremo izquierdo del
+    // intervalo de la raiz
+    } else if (intervalo_extremo_izq(intervalo) > intervalo_extremo_izq(arbol->intervalo))
+        // Ejecutamos la funcion eliminar en el subarbol derecho
         arbol->der = itree_eliminar(arbol->der, intervalo);
-    } else {
+    else {
+        // Ejecutamos la funcion eliminar en el subarbol derecho
         arbol->izq = itree_eliminar(arbol->izq, intervalo);
     }
-    if (arbol) {
-        arbol->altura =  1 + MAX(itree_altura(arbol->izq), itree_altura(arbol->der));
-        arbol->maxExtremoDer = itree_calcular_max_extremo_der(arbol);
-    }
-    return itree_balancear(arbol);
+    if (arbol) // Si el arbol no esta vacio
+        itree_actualizar_datos(arbol); // Actualizamos los datos del arbol
+    return itree_balancear(arbol); // Retornamos el arbol balanceado
 }
 
 ITree itree_intersecar(ITree arbol, Intervalo *intervalo) {
@@ -258,10 +290,4 @@ void itree_recorrer_bfs(ITree arbol, FuncionIntervaloVoid funcion) {
             queue = aux->der ? queue_push(queue, aux->der) : queue;
         }
     }
-}
-
-void itree_aplicar_a_intervalo(ITree arbol, FuncionIntervaloVoid funcion) {
-    if (arbol) // Si el arbol no esta vacio
-        // Aplica la funcion en el intervalo de la raiz
-        funcion(arbol->intervalo);
 }
