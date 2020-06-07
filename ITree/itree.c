@@ -175,13 +175,14 @@ int itree_altura(ITree arbol) {
 }
 
 ITree itree_insertar(ITree arbol, Intervalo *intervalo) {
-    // Si el intervalo es invalido o los extremos del intervalo coinciden con
-    // los del arbol
-    if (!intervalo_valido(intervalo) || 
-        (intervalo_extremo_izq(intervalo) == intervalo_extremo_izq(arbol->intervalo) 
-        && intervalo_extremo_der(intervalo) == intervalo_extremo_der(arbol->intervalo)))
+    // Si el intervalo es invalido
+    if (!intervalo_valido(intervalo))
         return arbol; // Devolvemos el mismo arbol
     if (arbol) { // Si el arbol no esta vacio
+        // Si los extremos del intervalo coinciden con los del arbol
+        if (intervalo_extremo_izq(intervalo) == intervalo_extremo_izq(arbol->intervalo) 
+            && intervalo_extremo_der(intervalo) == intervalo_extremo_der(arbol->intervalo))
+            return arbol; // Devolvemos el mismo arbol
         // Si el extremo izquierdo del intervalo es menor al extremo izquierdo
         // del intervalo del arbol o el extremo izquierdo del intervalo es 
         // igual al extremo izquiedo del intervalo del arbol y el extremo 
