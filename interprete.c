@@ -7,37 +7,57 @@
 
 /*
     leer_cadena: char* -> char*
+    Toma lo escrito por el teclado, y lo retorna reemplazando el salto de linea
+    por un '\0'.
 */
 char *leer_cadena(char *string) {
     char c, *aux = string;
+    // Mientras que el caracter leido sea distinto a '\n'
     while ((c = getchar()) != '\n') {
-        if (c != '\r') {
-            *string = c;
-            ++string;
+        if (c != '\r') { // Si el caracter leido es distinto a '\r'
+            *string = c; // Almacenamos el caracter en string
+            ++string; // Movemos la posicion a la que apunta string
         }
     }
-    *string = '\0';
-    return aux;
+    *string = '\0'; // Colocamos un terminador al final
+    return aux; // Devolvemos un puntero al comienzo de string
 }
 
 /*
-    
+    obtener_operacion: char* Intervalo** -> char
+    Dado un string y un puntero a un puntero intervalo, si el string cumple el
+    formato de una operacion valida devolvemos la operacion a realizar y
+    almacenamos el intervalo con los datos tomados.
 */
 char obtener_operacion(char *string, Intervalo **intervalo) {
     char operacion = string[0], *resto;
     double numero1, numero2;
-    if (strlen(string) >= 8 && string[1] == ' ' && string[2] == '[') {
-        string += 3;
+    // Si cumple el tamaño minimo de caracteres y los primeros 3 caracteres
+    // cumplen un cierto formato
+    if (strlen(string) >= 8 && isalpha(string[0]) && string[1] == ' ' && string[2] == '[') {
+        string += 3; // Movemos la posicion a la que apunta string
+        // Si el caracter al que apunta string es un numero o un '-'
         if (isdigit(*string) != 0 || *string == '-') {
+            // Almacena en numero1 el double que aparece en string y en resto
+            // se almacena la direccion de memoria del primer el caracter que no
+            // se pudo almacenar en numero1
             numero1 = strtod(string, &resto);
         }
+        // Si los primeron 3 caracteres desde donde apunta resto cumple cierto
+        // formato
         if (*resto == ',' && *(resto + 1) == ' ' && (isdigit(*(resto + 2)) || *(resto + 2) == '-')) {
-            string = resto + 2;
+            string = resto + 2; // Movemos la posicion a la que apunta string
+            // Almacena en numero2 el double que aparece en string y en resto
+            // se almacena la direccion de memoria del primer el caracter que no
+            // se pudo almacenar en numero2
             numero2 = strtod(string, &resto);
         }
+        // Si el penultimo y el ultimo caracter coinciden a '\0' y ']' 
+        // respectivamente
         if (*resto == ']' && *(resto + 1) == '\0') {
+            // Guarda en intervalo el intervalo creado por numero1 y numero2
             *intervalo = intervalo_crear(numero1, numero2);
-            return operacion;
+            return operacion; // Retorna la operacion
         }
     }
     return '\0';
