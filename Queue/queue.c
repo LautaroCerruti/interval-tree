@@ -8,7 +8,7 @@ struct _QNode {
   struct _QNode *sig;
 };
 
-Queue queue_create() {
+Queue queue_crear() {
   return NULL; // Retorna una cola vacia
 }
 

@@ -1,0 +1,234 @@
+\documentclass[]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper]{geometry}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2,
+	framexleftmargin=5mm, frame=shadowbox, rulesepcolor=\color{gray}
+}
+
+\lstset{style=mystyle}
+%opening
+\begin{document}
+	
+\title{TP Árbol De Intervalos}
+\author{Cassinerio Marcos - Cerruti Lautaro}
+\date{Junio 7, 2020\footnote{Updated \today}}
+\maketitle
+\newpage
+
+\section{Introducción}
+El objetivo de este trabajo fue implementar un árbol AVL de Intervalos. Adicionalmente implementamos un intérprete para poder utilizar el árbol y sus funciones desde la entrada estándar. 
+
+\section{Compilado y ejecucion}
+Para compilar el proyecto abrimos una terminal, y una vez ubicados en el directorio del proyecto, ejecutamos el comando \verb|make|. Esto nos generará el ejecutable del intérprete.\\\\
+El mismo lo corremos con: 
+
+\verb|./interprete|
+\\\\Este programa nos permitirá ingresar comandos para manipular un árbol. Los comando aceptados son:
+ \begin{itemize}
+ 	\item \verb|i [a, b]|: inserta el intervalo [a, b] en el árbol. Ej: \verb|i [5.4, 6.3]|.
+ 	\item \verb|e [a, b]|: elimina el intervalo [a, b] del árbol. Ej: \verb|e [2.2, 1e4]|.
+ 	\item \verb|? [a, b]|: interseca el intervalo [a, b] con los intervalos del árbol. Ej: \verb|? [-1, 0.5]|.
+ 	\item \verb|dfs|: imprime los intervalos del árbol con recorrido primero en profundidad.
+ 	\item \verb|bfs|: imprime los intervalos del árbol con recorrido primero a lo ancho.
+ 	\item \verb|salir|: destruye el árbol y termina el programa.
+ \end{itemize}
+Los primeros 3 comandos tienen que respetar el formato \verb|caracterOperacion [a, b]|.
+\section{Organizacion de los archivos}
+El programa se divide en 4 partes: Intervalo, Árbol de Intervalos, Cola (Queue) e intérprete\\
+Por un lado tenemos la implementación y declaración de Queue en los archivos \verb|queue.c| y \verb|queue.h| respectivamente.\\
+Por otro lado tenemos Intervalo hecho de la misma manera, en los archivos \verb|intervalo.c| y \verb|intervalo.h|.\\
+Luego tenemos al Árbol de Intervalos que hace uso de las dependecias queue e intervalo. Su implementación y declaración se encuentra en los archivos \verb|itree.c| y \verb|itree.h|.\\
+Finalmente tenemos en el archivo \verb|interprete.c| el intéprete que es nuestra interfaz del progragama para manipular los Árboles de Intervalos.
+\newpage
+\section{Implementaciones y estructuras}
+\subsection{Queue}
+La implementación de Queue esta basada en una Lista Doblemente Enlazada Circular, definida de la siguiente forma:
+
+\begin{lstlisting}[language=C]
+struct _QNode {
+  void *dato;
+  struct _QNode *ant;
+  struct _QNode *sig;
+};
+
+typedef struct _QNode QNode;
+
+typedef QNode *Queue;
+\end{lstlisting}
+En su cabecera declaramos sus únicas 3 funciones:
+
+\verb|queue_crear|
+
+\verb|queue_pop|
+
+\verb|queue_push|
+
+\verb|queue_destruir|
+\\\\
+La función \verb|queue_destruir| nunca es utilizada, pero para que la implentación de la Cola sea general se vio la necesidad de hacerla.\\
+Todas las implementaciones se encuentran en \verb|queue.c|.
+\subsection{Intervalo}
+La declaración de intervalo es la siguiente:
+
+\begin{lstlisting}[language=C]
+struct _Intervalo{
+  double extremoIzq;
+  double extremoDer;
+};
+
+typedef struct _Intervalo Intervalo;
+\end{lstlisting}
+En su cabecera declaramos las siguientes funciones:
+
+\verb|intervalo_crear|
+
+\verb|intervalo_destruir|
+
+\verb|intervalo_extremo_izq|
+
+\verb|intervalo_extremo_der|
+
+\verb|intervalo_valido|
+
+\verb|intervalo_interseca|
+
+\verb|intervalo_imprimir|\\\\
+Sus implentaciones se encuentran en \verb|intervalo.c|.
+\newpage
+\subsection{ITree}
+El Árbol de Intervalos se encuentra definido de la siguiente manera:
+
+\begin{lstlisting}[language=C]
+struct _INodo {
+  Intervalo *intervalo;
+  double maxExtremoDer;
+  int altura;
+  struct _INodo *izq;
+  struct _INodo *der;
+};
+
+typedef struct _INodo INodo;
+
+typedef INodo *ITree;
+\end{lstlisting}
+\\
+En su archivo cabecera se encuentran declaradas las siguientes funciones:
+
+\verb|itree_crear|
+
+\verb|itree_destruir|
+
+\verb|itree_altura|
+
+\verb|itree_insertar|
+
+\verb|itree_eliminar|
+
+\verb|itree_intersecar|
+
+\verb|itree_recorrer_dfs|
+
+\verb|itree_recorrer_bfs|
+
+\verb|itree_aplicar_a_intervalo|
+\\
+Sus implementaciones se encuentran en el archivo \verb|itree.c|, junto con las implementaciones de las funciones:
+
+\verb|itree_nuevo_nodo|
+
+\verb|itree_calcular_max_extremo_der|
+
+\verb|itree_calcular_altura|
+
+\verb|itree_actualizar_datos|
+
+\verb|rotacion_izquierda|
+
+\verb|rotacion_derecha|
+
+\verb|itree_balance|
+
+\verb|itree_balancear|
+
+\verb|itree_obtener_menor|
+
+\subsection{Interprete}
+El interprete se encuentra el main del programa, este se encarga de leer la entrada estandar, validarla y ejecutar las funciones de ITree e intervalo según la entrada. En este archivo estan implementadas las siguientes funciones:
+
+\verb|leer_cadena|
+
+\verb|obtener_operacion|
+\section{Resultados Pruebas}
+\subsection{Primer Caso de Prueba}
+Esta primer prueba la realizamos con 5000 personas.\\
+Resultados:
+
+\subsubsection{Edad}
+\verb|Selection Sort: 0.147 segundos|\\
+\verb|Insertion Sort: 0.096 segundos|\\
+\verb|Merge Sort: 0.005 segundos|\\
+\subsubsection{Largo Nombre}
+\verb|Selection Sort: 0.859 segundos|\\
+\verb|Insertion Sort: 0.329 segundos|\\
+\verb|Merge Sort: 0.007 segundos|\\
+\subsection{Segundo Caso de Prueba}
+Esta segunda prueba la realizamos con 15000 personas.\\
+Resultados:
+
+\subsubsection{Edad}
+\verb|Selection Sort: 1.522 segundos|\\
+\verb|Insertion Sort: 1.103 segundos|\\
+\verb|Merge Sort: 0.013 segundos|\\
+\subsubsection{Largo Nombre}
+\verb|Selection Sort: 9.611 segundos|\\
+\verb|Insertion Sort: 3.647 segundos|\\
+\verb|Merge Sort: 0.021 segundos|\\
+
+\subsection{Tercer Caso de Prueba}
+Esta última prueba la realizamos con 30000 personas.\\
+Resultados:
+
+\subsubsection{Edad}
+\verb|Selection Sort: 10.479 segundos|\\
+\verb|Insertion Sort: 9.065 segundos|\\
+\verb|Merge Sort: 0.042 segundos|\\
+\subsubsection{Largo Nombre}
+\verb|Selection Sort: 68.993 segundos|\\
+\verb|Insertion Sort: 33.761 segundos|\\
+\verb|Merge Sort: 0.051 segundos|\\
+
+Empezamos haciendo todo lo relacionado al Árbol de Intervalos, mientras trabajabamos en sus funciones, nos dimos cuenta que podiamos modularizar los intervalos como una estructura para facilitar el agregado, el borrado y la impresion de los mismos, y para mantener una mejor organización del código.\\
+Luego de haber implementado las funciones necesarias de intervalos, proseguimos refactorizando lo ya hecho del árbol.\\
+Realizamos estos cambios hasta llegar a la impresion del arbol con BFS. Esta la habiamos dejado para el final por la necesidad de implementar una Cola. La implementamos en su propio modulo
+\section{Bibliografia}
+\url{https://en.wikipedia.org/wiki/Selection_sort}\\
+\url{https://en.wikipedia.org/wiki/Insertion_sort}\\
+\url{https://en.wikipedia.org/wiki/Merge_sort}\\
+\url{https://www.geeksforgeeks.org/merge-sort-for-doubly-linked-list/}\\
+\url{https://www.geeksforgeeks.org/how-to-measure-time-taken-by-a-program-in-c/}\\
+\end{document}

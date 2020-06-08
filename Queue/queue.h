@@ -12,10 +12,10 @@ typedef QNode *Queue;
 typedef void (*FuncionDestruir) (void *dato);
 
 /*
-    queue_create: -> Queue
+    queue_crear: -> Queue
     Crea una cola vacia.
 */
-Queue queue_create();
+Queue queue_crear();
 
 /*
     queue_pop: Queue* -> void*

@@ -147,12 +147,6 @@ INodo *itree_obtener_menor(ITree arbol) {
     return itree_obtener_menor(arbol->izq);
 }
 
-void itree_aplicar_a_intervalo(ITree arbol, FuncionIntervaloVoid funcion) {
-    if (arbol) // Si el arbol no esta vacio
-        // Aplica la funcion en el intervalo de la raiz
-        funcion(arbol->intervalo);
-}
-
 ITree itree_crear() {
     return NULL; // Retorna un ITree vacio
 }
@@ -289,7 +283,7 @@ void itree_recorrer_dfs(ITree arbol, FuncionIntervaloVoid funcion) {
 
 void itree_recorrer_bfs(ITree arbol, FuncionIntervaloVoid funcion) {
     if (arbol) { // Si el arbol no esta vacio
-        Queue queue = queue_create(); // Crea una Queue vacia
+        Queue queue = queue_crear(); // Crea una Queue vacia
         ITree aux;
         queue = queue_push(queue, arbol); // Metemos la raiz en la cola
         while (queue) { // Mientras la cola no este vacia
@@ -300,4 +294,10 @@ void itree_recorrer_bfs(ITree arbol, FuncionIntervaloVoid funcion) {
             queue = aux->der ? queue_push(queue, aux->der) : queue;
         }
     }
+}
+
+void itree_aplicar_a_intervalo(ITree arbol, FuncionIntervaloVoid funcion) {
+    if (arbol) // Si el arbol no esta vacio
+        // Aplica la funcion en el intervalo de la raiz
+        funcion(arbol->intervalo);
 }
