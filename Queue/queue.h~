@@ -21,7 +21,7 @@ Queue queue_crear();
     queue_pop: Queue* -> void*
     Toma una cola, elimina el primer nodo y devuelve su dato en caso de que la cola no este vacia.
 */
-void *queue_pop(Queue * queue);
+void *queue_pop(Queue *queue);
 
 /*
     queue_push: Queue void* -> Queue
@@ -35,4 +35,4 @@ Queue queue_push(Queue queue, void *dato);
 */
 void queue_destruir(Queue queue, FuncionDestruir funcion);
 
-#endif                          /* __QUEUE_H__ */
+#endif /* __QUEUE_H__ */

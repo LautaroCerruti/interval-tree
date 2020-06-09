@@ -11,7 +11,7 @@ typedef struct _INodo INodo;
 
 typedef INodo *ITree;
 
-typedef void (*FuncionIntervaloVoid) (Intervalo * intervalo);
+typedef void (*FuncionIntervaloVoid) (Intervalo *intervalo);
 
 /*
     itree_crear: -> ITree
@@ -38,7 +38,7 @@ int itree_altura(ITree arbol);
     caso que sea valido y que no se encuentre ya en el arbol.
     Retorna la raiz del arbol.
 */
-ITree itree_insertar(ITree arbol, Intervalo * intervalo);
+ITree itree_insertar(ITree arbol, Intervalo *intervalo);
 
 /*
     itree_eliminar: ITree Intervalo* -> ITree
@@ -46,7 +46,7 @@ ITree itree_insertar(ITree arbol, Intervalo * intervalo);
     el arbol, lo elimina del mismo liberando su memoria.
     Retorna la raiz del arbol.
 */
-ITree itree_eliminar(ITree arbol, Intervalo * intervalo);
+ITree itree_eliminar(ITree arbol, Intervalo *intervalo);
 
 /*
     itree_intersecar: ITree Intervalo* -> INodo*
@@ -54,7 +54,7 @@ ITree itree_eliminar(ITree arbol, Intervalo * intervalo);
     con algun nodo del arbol, devuelve el primer nodo con el que lo hizo,
     en caso contrario NULL.
 */
-INodo *itree_intersecar(ITree arbol, Intervalo * intervalo);
+INodo *itree_intersecar(ITree arbol, Intervalo *intervalo);
 
 /*
     itree_recorrer_dfs: ITree FuncionIntervaloVoid
@@ -75,6 +75,6 @@ void itree_recorrer_bfs(ITree arbol, FuncionIntervaloVoid funcion);
     Dado un nodo y una funcion, aplica la funcion en el intervalo 
     almacenado en el nodo.
 */
-void itree_aplicar_a_intervalo(INodo * arbol, FuncionIntervaloVoid funcion);
+void itree_aplicar_a_intervalo(INodo *arbol, FuncionIntervaloVoid funcion);
 
-#endif                          /* __ITREE_H__ */
+#endif /* __ITREE_H__ */
