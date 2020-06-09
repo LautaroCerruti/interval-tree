@@ -70,8 +70,13 @@ int main() {
   ITree arbol = itree_crear(), nodo;
   Intervalo *intervalo;
 
-  printf
-      ("i: insertar\ne: eliminar\n?: intersecar\ndfs, bfs: mostrar arbol\nsalir: finalizar programa\n\n");
+  printf("i: Insertar\n");
+  printf("e: Eliminar\n");
+  printf("?: Intersecar\n");
+  printf("Estos comandos deberan ser de la manera:\n");
+  printf("  'CaracterOperacion [Numero1, Numero2]'\n");
+  printf("dfs, bfs: Mostrar arbol\n");
+  printf("salir: Finalizar programa\n\n");
 
   while (strcmp(leer_cadena(buffer), "salir\0")) {
     if (!strcmp(buffer, "dfs\0")) {
